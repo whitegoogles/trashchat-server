@@ -39,8 +39,10 @@ io.on('connection',(socket)=>{
 	function checkTimedOut(room){
 		if((+new Date())/1000 > cache.get(room).timeout){
 			io.sockets.in(room).emit('room-closed',{});
+			console.log("well lads we timed out");
 			return true;
 		}
+		console.log("WE AREN'T TIMING OUT AGGGGGGGGGG");
 		return false;
 	}
 	socket.on('room-opened',(data)=>{
@@ -64,7 +66,7 @@ io.on('connection',(socket)=>{
 			console.log("found the room");
 			data.room = data.room.substring(0,roomLimit);
 			var messages = cache.get(data.room).messages;
-			if(!checkTimedOut(data.room) && data.index && data.index>0 && data.index<messages.length){
+			if(!checkTimedOut(data.room) && data.index && data.index>0 && data.index<=messages.length){
 				console.log("ok not timed out or anthing");
 				var begin = data.index-50;
 				begin = begin>=0 ? begin: 0;
