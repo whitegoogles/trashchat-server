@@ -11,6 +11,8 @@ const messageLimit = 2000;
 const nameLimit = 20;
 const roomLimit = 36;
 
+app.use(allowCrossDomain);
+
 // Put all API endpoints under '/api'
 app.get('/room', (req, res) => {
   var roomId = uuidv4();
