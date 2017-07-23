@@ -25,7 +25,9 @@ var allowCrossDomain = function(req, res, next) {
     }
 };
 
-app.use(allowCrossDomain);
+app.configure(function(){
+	app.use(allowCrossDomain);
+});
 
 // Put all API endpoints under '/api'
 app.get('/room', (req, res) => {
