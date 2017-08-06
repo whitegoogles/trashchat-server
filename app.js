@@ -1,5 +1,7 @@
 const express = require('express');
 const path = require('path');
+const moment = require('moment');
+require('moment-duration-format');
 const uuidv4 = require('uuid/v4');
 const open = require('open');
 const app = express();
@@ -12,7 +14,6 @@ const nameLimit = 20;
 const roomLimit = 36;
 
 var allowCrossDomain = function(req, res, next) {
-	console.log("OK LETS ALLOW FOR CORS PLEASE REEEE");
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin,Content-Type, Authorization, Content-Length, X-Requested-With');
@@ -49,10 +50,8 @@ io.on('connection',(socket)=>{
 	function checkTimedOut(room){
 		if((+new Date())/1000 > cache.get(room).timeout){
 			io.sockets.in(room).emit('room-closed',{});
-			console.log("well lads we timed out");
 			return true;
 		}
-		console.log("WE AREN'T TIMING OUT AGGGGGGGGGG");
 		return false;
 	}
 	socket.on('room-opened',(data)=>{
@@ -62,22 +61,27 @@ io.on('connection',(socket)=>{
 				setTimeout(function(){
 					io.sockets.in(data.room).emit('room-closed',{});
 				},roomLife*1000);
+				var roomInterval = setInterval(function(){
+					var timeLeft = cache.get(data.room).timeout-(+new Date())/1000;
+					console.log(timeLeft);
+					if(!checkTimedOut(data.room))
+						io.sockets.in(data.room).emit('heartbeat',{time:timeLeft});
+					else
+						clearInterval(roomInterval);
+				},30000);
 				cache.set(data.room,{messages:[],timeout:(+new Date())/1000+roomLife});
 			}
-			console.log("opening the room");
 			socket.join(data.room);
-			socket.emit('room-joined-at',{index:cache.get(data.room).messages.length});
+			var timeLeft = cache.get(data.room).timeout-(+new Date())/1000;
+			socket.emit('room-joined-at',{index:cache.get(data.room).messages.length,time:timeLeft});
 			checkTimedOut(data.room);
 		}
 	});
 	socket.on('get-last-50-messages',(data)=>{
-		console.log("getting last 50");
 		if(data.room && cache.get(data.room)){
-			console.log("found the room");
 			data.room = data.room.substring(0,roomLimit);
 			var messages = cache.get(data.room).messages;
 			if(!checkTimedOut(data.room) && data.index && data.index>0 && data.index<=messages.length){
-				console.log("ok not timed out or anthing");
 				var begin = data.index-50;
 				begin = begin>=0 ? begin: 0;
 				var lastMessages = messages.slice(begin,data.index);
@@ -86,7 +90,6 @@ io.on('connection',(socket)=>{
 		}
 	});
 	socket.on('message-sent',(data)=>{
-		console.log("message sent");
 		if(data.room && cache.get(data.room)){
 			data.room = data.room.substring(0,roomLimit);
 			if(!checkTimedOut(data.room) && data.message && data.name && data.id){
