@@ -91,6 +91,7 @@ io.on('connection',(socket)=>{
 				case roomStates.waiting:
 					room.state = roomStates.running;
 					room.expiration = -1;
+					room.timeout = (+ new Date())/1000 + roomLife;
 					cache.set(data.room,room);
 					var timeLeft = room.timeout-(+new Date())/1000;
 					io.sockets.in(data.room).emit('room-joined-at',{index:cache.get(data.room).messages.length,time:timeLeft});
