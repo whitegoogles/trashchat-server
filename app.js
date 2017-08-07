@@ -18,7 +18,7 @@ var roomStates = {
 const cache = require('node-file-cache').create({life:roomExpiration});
 
 const roomLife = 60*15;
-const reactPath = '../trashchat-client/public/index.html';
+const reactPath = './build/index.html';
 const messageLimit = 2000;
 const nameLimit = 20;
 const roomLimit = 36;
