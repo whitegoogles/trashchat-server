@@ -143,10 +143,13 @@ io.on('connection',(socket)=>{
 		}
 	});
 	socket.on('message-sent',(data)=>{
+		console.log("got message");
 		if(data.room && cache.get(data.room)){
+			console.log("found room");
 			data.room = data.room.substring(0,roomLimit);
 			room = cache.get(data.room);
 			if(canUseRoom(room) && data.message && data.name && data.id){
+				console.log("message was well formed");
 				var cleanedData = {
 					message:(""+data.message).substring(0,messageLimit),
 					name:(""+data.name).substring(0,nameLimit),
@@ -156,6 +159,7 @@ io.on('connection',(socket)=>{
 				};
 				room.messages.push(data);
 				cache.set(data.room,room);
+				console.log("well im emitting it");
 				io.sockets.in(data.room).emit('message-received',data);
 			}
 		}
