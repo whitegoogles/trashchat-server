@@ -115,6 +115,8 @@ io.on('connection',(socket)=>{
 					socket.disconnect();
 					break;
 				case roomStates.full:
+					var clients = io.sockets.adapter.rooms[data.room];
+					console.log(JSON.stringify(clients));
 					console.log("room is full my dude");
 					socket.emit('room-full',"");
 					socket.disconnect();
