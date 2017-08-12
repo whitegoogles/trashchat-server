@@ -121,6 +121,7 @@ io.on('connection',(socket)=>{
 					break;
 				case roomStates.running: 	
 					var clients = io.sockets.clients(room);
+					console.log(clients);
 					if(err || clients.length>=chattersLimit){
 						console.log("we are full dog");
 						room.state = roomStates.full;
