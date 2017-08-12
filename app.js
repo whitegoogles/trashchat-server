@@ -21,8 +21,8 @@ const roomLife = 30;//60*15;
 const reactPath = './build/index.html';
 const messageLimit = 2000;
 const nameLimit = 20;
-const roomLimit = 3; //50
-const chattersLimit = 50;
+const roomLimit = 36;
+const chattersLimit = 3; //50
 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -72,17 +72,13 @@ io.on('connection',(socket)=>{
 	}
 	
 	socket.on('room-opened',(data)=>{
-		console.log("opening room...");
-		console.log(JSON.stringify(data));
 		if(data.room){
 			data.room = data.room.substring(0,roomLimit);
 			//Room just got started by this person
 			if(!cache.get(data.room)){
-				console.log("setting room "+data.room);
 				cache.set(data.room,{
 					state:roomStates.started
 				});
-				console.log(cache.get(data.room));
 			}
 			socket.join(data.room);
 			var room = cache.get(data.room);
@@ -147,16 +143,10 @@ io.on('connection',(socket)=>{
 		}
 	});
 	socket.on('message-sent',(data)=>{
-		console.log("got message");
-		console.log(JSON.stringify(data));
-		console.log(data.room);
-		console.log(cache.get(data.room));
 		if(data.room && cache.get(data.room)){
-			console.log("found room");
 			data.room = data.room.substring(0,roomLimit);
 			room = cache.get(data.room);
 			if(canUseRoom(room) && data.message && data.name && data.id){
-				console.log("message was well formed");
 				var cleanedData = {
 					message:(""+data.message).substring(0,messageLimit),
 					name:(""+data.name).substring(0,nameLimit),
@@ -166,7 +156,6 @@ io.on('connection',(socket)=>{
 				};
 				room.messages.push(data);
 				cache.set(data.room,room);
-				console.log("well im emitting it");
 				io.sockets.in(data.room).emit('message-received',data);
 			}
 		}
