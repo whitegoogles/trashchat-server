@@ -78,9 +78,11 @@ io.on('connection',(socket)=>{
 			data.room = data.room.substring(0,roomLimit);
 			//Room just got started by this person
 			if(!cache.get(data.room)){
+				console.log("setting room "+data.room);
 				cache.set(data.room,{
 					state:roomStates.started
 				});
+				console.log(cache.get(data.room));
 			}
 			socket.join(data.room);
 			var room = cache.get(data.room);
@@ -147,6 +149,8 @@ io.on('connection',(socket)=>{
 	socket.on('message-sent',(data)=>{
 		console.log("got message");
 		console.log(JSON.stringify(data));
+		console.log(data.room);
+		console.log(cache.get(data.room));
 		if(data.room && cache.get(data.room)){
 			console.log("found room");
 			data.room = data.room.substring(0,roomLimit);
