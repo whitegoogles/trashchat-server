@@ -161,9 +161,9 @@ io.on('connection',(socket)=>{
 					time: (+new Date()),
 					id:(""+data.id).substring(0,roomLimit)
 				};
-				room.messages.push(data);
+				room.messages.push(cleanedData);
 				cache.set(data.room,room);
-				io.sockets.in(data.room).emit('message-received',data);
+				io.sockets.in(data.room).emit('message-received',cleanedData);
 			}
 		}
 	});
