@@ -120,18 +120,13 @@ io.on('connection',(socket)=>{
 					socket.disconnect();
 					break;
 				case roomStates.running: 	
-					console.log(io.of(room));
-					console.log(io.of(room).clients);
-					io.of(room).clients(function(err,clients){
-						console.log(err);
-						console.log(clients);
-						if(err || clients.length>=chattersLimit){
-							console.log("we are full dog");
-							room.state = roomStates.full;
-						}
-						cache.set(data.room,room);
-						socket.emit('room-joined-at',{index:cache.get(data.room).messages.length,time:timeLeft});
-					});
+					var clients = io.sockets.clients(room);
+					if(err || clients.length>=chattersLimit){
+						console.log("we are full dog");
+						room.state = roomStates.full;
+					}
+					cache.set(data.room,room);
+					socket.emit('room-joined-at',{index:cache.get(data.room).messages.length,time:timeLeft});
 					break;
 			}
 		}
