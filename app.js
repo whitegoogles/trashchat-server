@@ -120,9 +120,9 @@ io.on('connection',(socket)=>{
 					socket.disconnect();
 					break;
 				case roomStates.running: 	
-					console.log(socket.io.of(room));
-					console.log(socket.io.of(room).clients);
-					socket.io.of(room).clients(function(err,clients){
+					console.log(io.of(room));
+					console.log(io.of(room).clients);
+					io.of(room).clients(function(err,clients){
 						console.log(err);
 						console.log(clients);
 						if(err || clients.length>=chattersLimit){
