@@ -122,10 +122,7 @@ io.on('connection',(socket)=>{
 				case roomStates.running: 	
 					var timeLeft = room.timeout-(+new Date())/1000;
 					var clients = io.sockets.adapter.rooms[data.room];
-					console.log(clients.length);
-					clients.forEach(function(client){
-						console.log(JSON.stringify(client));
-					});
+					console.log(JSON.stringify(clients));
 					if(clients.length>=chattersLimit){
 						console.log("we are full dog");
 						room.state = roomStates.full;
