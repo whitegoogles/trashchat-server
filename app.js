@@ -120,7 +120,11 @@ io.on('connection',(socket)=>{
 					socket.disconnect();
 					break;
 				case roomStates.running: 	
-					var chatters = socket.io.of(room).clients(function(err,clients){
+					console.log(socket.io.of(room));
+					console.log(socket.io.of(room).clients);
+					socket.io.of(room).clients(function(err,clients){
+						console.log(err);
+						console.log(clients);
 						if(err || clients.length>=chattersLimit){
 							console.log("we are full dog");
 							room.state = roomStates.full;
