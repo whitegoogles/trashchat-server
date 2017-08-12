@@ -116,7 +116,7 @@ io.on('connection',(socket)=>{
 					break;
 				case roomStates.full:
 					var clients = io.sockets.adapter.rooms[data.room];
-					if(clients.length>=chattersLimit) {
+					if(clients.length>chattersLimit) {
 						socket.emit('room-full',"");
 						socket.disconnect();
 						break;
