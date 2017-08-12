@@ -127,7 +127,6 @@ io.on('connection',(socket)=>{
 						}
 						cache.set(data.room,room);
 						socket.emit('room-joined-at',{index:cache.get(data.room).messages.length,time:timeLeft});
-						break;
 					});
 					break;
 			}
