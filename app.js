@@ -82,6 +82,10 @@ io.on('connection',(socket)=>{
 			}
 			socket.join(data.room);
 			var room = cache.get(data.room);
+			var clients = io.sockets.adapter.rooms[data.room];
+			
+			//Reset back to a started room if a waiting person refreshes the page
+			room.state = room.state === roomStates.waiting && clients === 1 ? roomStates.started : room.state;
 			switch(room.state){
 				case roomStates.started:
 					room.state = roomStates.waiting;
@@ -115,7 +119,6 @@ io.on('connection',(socket)=>{
 					socket.disconnect();
 					break;
 				case roomStates.full:
-					var clients = io.sockets.adapter.rooms[data.room];
 					if(clients.length>chattersLimit) {
 						socket.emit('room-full',"");
 						socket.disconnect();
@@ -123,7 +126,6 @@ io.on('connection',(socket)=>{
 					}
 				case roomStates.running: 	
 					var timeLeft = room.timeout-(+new Date())/1000;
-					var clients = io.sockets.adapter.rooms[data.room];
 					room.state = roomStates.running; //Todo not sure about this and async stuff
 					if(clients.length>=chattersLimit){
 						room.state = roomStates.full;
