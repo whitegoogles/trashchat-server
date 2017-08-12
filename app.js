@@ -115,12 +115,15 @@ io.on('connection',(socket)=>{
 					socket.disconnect();
 					break;
 				case roomStates.full:
+					console.log("room is full my dude");
 					socket.emit('room-full');
 					socket.disconnect();
 					break;
 				case roomStates.running:
 					var chatters = io.sockets.in(data.room).length;
+					console.log(chatters);
 					if(chatters >= chattersLimit){
+						console.log("we are full dog");
 						room.state = roomStates.full;
 					}
 					cache.set(data.room,room);
