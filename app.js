@@ -111,12 +111,12 @@ io.on('connection',(socket)=>{
 					},30000);
 					break;
 				case roomStates.closed:
-					socket.emit('room-closed');
+					socket.emit('room-closed',"");
 					socket.disconnect();
 					break;
 				case roomStates.full:
 					console.log("room is full my dude");
-					socket.emit('room-full');
+					socket.emit('room-full',"");
 					socket.disconnect();
 					break;
 				case roomStates.running: 	
