@@ -85,7 +85,7 @@ io.on('connection',(socket)=>{
 			var clients = io.sockets.adapter.rooms[data.room];
 			
 			//Reset back to a started room if a waiting person refreshes the page
-			room.state = room.state === roomStates.waiting && clients === 1 ? roomStates.started : room.state;
+			room.state = room.state === roomStates.waiting && clients.length === 1 ? roomStates.started : room.state;
 			switch(room.state){
 				case roomStates.started:
 					room.state = roomStates.waiting;
