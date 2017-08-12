@@ -17,11 +17,11 @@ var roomStates = {
 
 const cache = require('node-file-cache').create({life:roomExpiration});
 
-const roomLife = 60*15;
+const roomLife = 30;//60*15;
 const reactPath = './build/index.html';
 const messageLimit = 2000;
 const nameLimit = 20;
-const roomLimit = 36;
+const roomLimit = 3; //50
 const chattersLimit = 50;
 
 var allowCrossDomain = function(req, res, next) {
@@ -124,6 +124,7 @@ io.on('connection',(socket)=>{
 						room.state = roomStates.full;
 					}
 					cache.set(data.room,room);
+					socket.emit('room-joined-at',{index:cache.get(data.room).messages.length,time:timeLeft});
 					break;
 			}
 		}
