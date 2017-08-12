@@ -116,17 +116,16 @@ io.on('connection',(socket)=>{
 					break;
 				case roomStates.full:
 					var clients = io.sockets.adapter.rooms[data.room];
-					console.log(JSON.stringify(clients));
-					console.log("room is full my dude");
-					socket.emit('room-full',"");
-					socket.disconnect();
-					break;
+					if(clients.length>=chattersLimit) {
+						socket.emit('room-full',"");
+						socket.disconnect();
+						break;
+					}
 				case roomStates.running: 	
 					var timeLeft = room.timeout-(+new Date())/1000;
 					var clients = io.sockets.adapter.rooms[data.room];
-					console.log(JSON.stringify(clients));
+					room.state = roomStates.running; //Todo not sure about this and async stuff
 					if(clients.length>=chattersLimit){
-						console.log("we are full dog");
 						room.state = roomStates.full;
 					}
 					cache.set(data.room,room);
