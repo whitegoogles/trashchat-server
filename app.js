@@ -119,15 +119,16 @@ io.on('connection',(socket)=>{
 					socket.emit('room-full');
 					socket.disconnect();
 					break;
-				case roomStates.running:
-					var chatters = io.sockets.in(data.room).length;
-					console.log(chatters);
-					if(chatters >= chattersLimit){
-						console.log("we are full dog");
-						room.state = roomStates.full;
-					}
-					cache.set(data.room,room);
-					socket.emit('room-joined-at',{index:cache.get(data.room).messages.length,time:timeLeft});
+				case roomStates.running: 	
+					var chatters = socket.io.of(room).clients(function(err,clients){
+						if(err || clients.length>=chattersLimit){
+							console.log("we are full dog");
+							room.state = roomStates.full;
+						}
+						cache.set(data.room,room);
+						socket.emit('room-joined-at',{index:cache.get(data.room).messages.length,time:timeLeft});
+						break;
+					});
 					break;
 			}
 		}
