@@ -5,24 +5,19 @@ require('moment-duration-format');
 const uuidv4 = require('uuid/v4');
 const open = require('open');
 const app = express();
+var config = require('./config.js');
 
-const roomExpiration = 60*60*24*7;
-var roomStates = {
-	'started':'room-started',
-	"closed":'room-closed',
-	'waiting':'room-waiting',
-	'running':'room-running',
-	'full': 'room-full'
-};
+const roomExpiration = config.roomExpiration;
+var roomStates = config.roomStates;
 
 const cache = require('node-file-cache').create({life:roomExpiration});
 
-const roomLife = 30;//60*15;
+const roomLife = config.roomLife;
 const reactPath = './build/index.html';
-const messageLimit = 2000;
-const nameLimit = 20;
+const messageLimit = config.messageLimit;
+const nameLimit = config.nameLimit;
 const roomLimit = 36;
-const chattersLimit = 3; //50
+const chattersLimit = config.chattersLimit;
 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
